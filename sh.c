@@ -155,6 +155,8 @@ main(void)
     }
   }
 
+  printf(1, "Current UID: %d\n", getuid());
+
   // Read and run input commands.
   while(getcmd(buf, sizeof(buf)) >= 0){
     if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){

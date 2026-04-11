@@ -59,6 +59,11 @@ int main(void) {
         found = 1;
         printf(1, "\nWelcome %s!\n", u.username);
 
+        setuid(u.role); // Set the user ID (role) for the current process.
+                        // This will allow the shell and other processes to check the user's role
+                        // and grant or restrict access to certain features based on that role.
+                        // The setuid system call was implemented and was not in the original xv6 codebase.
+
         char *argv[] = { "sh", 0 };
         exec("sh", argv);
       }

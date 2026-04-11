@@ -97,3 +97,18 @@ int sys_clear(void)
   clearscreen();
   return 0;
 }
+
+int sys_setuid(void)
+{
+  int uid;
+  if(argint(0, &uid) < 0)
+    return -1;
+
+  myproc()->uid = uid;
+  return 0;
+}
+
+int sys_getuid(void)
+{
+  return myproc()->uid;
+}

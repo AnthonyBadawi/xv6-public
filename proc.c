@@ -86,6 +86,7 @@ allocproc(void)
   return 0;
 
 found:
+  p->uid = 0; // default = normal user
   p->state = EMBRYO;
   p->pid = nextpid++;
 
