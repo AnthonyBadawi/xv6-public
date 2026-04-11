@@ -185,6 +185,7 @@ UPROGS=\
 	_clr\
 	_login\
 	_mkusers\
+	_useradd\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
