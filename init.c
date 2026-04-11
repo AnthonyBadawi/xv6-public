@@ -26,6 +26,15 @@ main(void)
       printf(1, "init: fork failed\n");
       exit();
     }
+// Create the users file if it doesn't exist (to be removed later)
+    if(fork() == 0){
+      char *argv2[] = { "mkusers", 0 };
+      exec("mkusers", argv2);
+      exit();
+    }
+    wait();
+// Start the login program
+
     if(pid == 0){
       exec("login", argv);
       printf(1, "init: exec login failed\n");

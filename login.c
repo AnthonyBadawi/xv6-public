@@ -2,6 +2,15 @@
 #include "stat.h"
 #include "user.h"
 
+#define ROLE_USER 0
+#define ROLE_ADMIN 1
+
+struct user {
+  char username[16];
+  char password[16];
+  int role;
+};
+
 int main(void) {
   clear(); //custom system call that was created to clear the console
   char username[32];
@@ -35,18 +44,30 @@ int main(void) {
     username[strlen(username)-1] = 0;
     password[strlen(password)-1] = 0;
 
-    if(strcmp(username, "admin") == 0 && strcmp(password, "1234") == 0){
-      printf(1, "\nWelcome %s!\n", username);
-
-      char *argv[] = { "sh", 0 };
-      exec("sh", argv);
-
-      printf(1, "Failed to start shell\n");
+    int fd = open("users", 0);
+    if(fd < 0){
+      printf(1, "Error: no user database\n");
       exit();
-    } else {
+    }
+
+    struct user u;
+    int found = 0;
+
+    while(read(fd, &u, sizeof(u)) == sizeof(u)){
+      if(strcmp(u.username, username) == 0 &&
+         strcmp(u.password, password) == 0){
+        found = 1;
+        printf(1, "\nWelcome %s!\n", u.username);
+
+        char *argv[] = { "sh", 0 };
+        exec("sh", argv);
+      }
+    }
+
+    close(fd);
+
+    if(!found){
       printf(1, "\nLogin failed\n\n");
     }
   }
-
-  exit();
 }
