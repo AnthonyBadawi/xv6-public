@@ -174,7 +174,7 @@ main(void)
     // Prevent non-admin users from running the some command command.
     // this is very bad check because can be bypassed by write and runnig a script inside xv6.
     // this implementation was added and was not in the original xv6 codebase.
-    if(uid == 0 && (strncmp(buf, "kill", 4) == 0 || strncmp(buf, "rm", 2) == 0 || strncmp(buf, "useradd", 7) == 0)){
+    if(uid == 0 && (strncmp(buf, "kill", 4) == 0 || strncmp(buf, "rm", 2) == 0 || strncmp(buf, "useradd", 7) == 0 || strncmp(buf, "userdel", 7) == 0)){
       printf(2, "Permission denied: admin only command\n");
       continue;
     }

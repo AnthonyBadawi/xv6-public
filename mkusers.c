@@ -30,7 +30,7 @@ int main(void)
   struct user u;
   
   strcpy(u.username, "admin");
-  u.passhash = simple_hash("1234");
+  u.passhash = simple_hash("admin");
   u.role = ROLE_ADMIN;
   write(fd, &u, sizeof(u));
 
