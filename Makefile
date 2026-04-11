@@ -189,7 +189,7 @@ UPROGS=\
 	_userdel\
 
 fs.img: mkfs README $(UPROGS)
-	./mkfs fs.img README $(UPROGS)
+	@if [ ! -f fs.img ]; then ./mkfs fs.img README $(UPROGS); fi
 
 -include *.d
 
