@@ -89,3 +89,11 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+extern void clearscreen(void);
+
+int sys_clear(void)
+{
+  clearscreen();
+  return 0;
+}
