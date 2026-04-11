@@ -8,23 +8,34 @@
 
 struct user {
   char username[16];
-  char password[16];
+  unsigned int passhash;
   int role;
 };
+
+// Simple hash function for passwords.
+unsigned int simple_hash(char *s) {
+  unsigned int h = 5381;
+
+  for(int i = 0; s[i]; i++){
+    h = ((h << 5) + h) + s[i]; // h * 33 + c
+  }
+
+  return h;
+}
 
 int main(void)
 {
   int fd = open("users", O_CREATE | O_WRONLY);
 
   struct user u;
-
+  
   strcpy(u.username, "admin");
-  strcpy(u.password, "1234");
+  u.passhash = simple_hash("1234");
   u.role = ROLE_ADMIN;
   write(fd, &u, sizeof(u));
 
   strcpy(u.username, "bob");
-  strcpy(u.password, "1111");
+  u.passhash = simple_hash("1111");
   u.role = ROLE_USER;
   write(fd, &u, sizeof(u));
 

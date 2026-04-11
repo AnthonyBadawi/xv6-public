@@ -7,9 +7,20 @@
 
 struct user {
   char username[16];
-  char password[16];
+  unsigned int passhash;
   int role;
 };
+
+// Simple hash function for passwords.
+unsigned int simple_hash(char *s) {
+  unsigned int h = 5381;
+
+  for(int i = 0; s[i]; i++){
+    h = ((h << 5) + h) + s[i]; // h * 33 + c
+  }
+
+  return h;
+}
 
 int main(void) {
   clear(); //custom system call that was created to clear the console
@@ -54,8 +65,7 @@ int main(void) {
     int found = 0;
 
     while(read(fd, &u, sizeof(u)) == sizeof(u)){
-      if(strcmp(u.username, username) == 0 &&
-         strcmp(u.password, password) == 0){
+      if(strcmp(u.username, username) == 0 && simple_hash(password) == u.passhash){
         found = 1;
         printf(1, "\nWelcome %s!\n", u.username);
 
