@@ -172,6 +172,82 @@ $ cat /etc/hosts | rfl
 ```
 Reads from stdin and prints first line.
 
+### `ls` (ls.c) - Wildcard Support
+**Enhanced listing utility with wildcard pattern matching**
+
+**Features Added:**
+- Supports `*` wildcard pattern matching for filenames
+- Automatically detects wildcard characters in arguments
+- Expands patterns to match multiple files in the current directory
+- Falls back to normal ls behavior for non-wildcard arguments
+- Works with the `ls *` pattern to list all files
+
+**Pattern Matching:**
+- The `match()` function implements recursive pattern matching
+- `*` matches zero or more characters
+- Patterns are matched against filenames in the current directory
+- Returns matching files with file info (type, inode, size)
+
+**Limitations:**
+- **Only works in the current directory** - patterns like `/tmp/*` or `subdir/*` are not supported
+- **Current directory only** - the `ls_wildcard()` function is hardcoded to open `.` (dot)
+- No support for other glob patterns like `?` or `[...]`
+- Shell doesn't expand wildcards, so this implementation handles it in the ls command itself
+
+**Usage:**
+```
+$ ls                        # Normal listing of current directory
+$ ls *                      # Lists all files matching *
+$ ls *.c                    # Would match all .c files (if shell expanded)
+$ ls file*                  # Lists files starting with "file" in current directory
+```
+
+**Examples:**
+```
+$ ls
+.        2 1 512
+..       2 1 512
+usr      2 4 512
+tmp      2 5 512
+
+$ ls *
+.           2 1 512
+..          2 1 512
+cat.c       1 12 1024
+echo.c      1 13 2048
+```
+
+**Implementation Details:**
+
+The enhancement adds two main components:
+
+1. **Pattern Matching Function (`match()`):**
+   ```c
+   int match(char *pattern, char *name){
+     if(*pattern == 0 && *name == 0)
+       return 1;
+     if(*pattern == '*'){
+       return match(pattern+1, name) || (*name && match(pattern, name+1));
+     }
+     if(*pattern == *name)
+       return match(pattern+1, name+1);
+     return 0;
+   }
+   ```
+   Uses recursive backtracking to match `*` wildcard.
+
+2. **Wildcard Handler (`ls_wildcard()`):**
+   - Opens the current directory
+   - Iterates through directory entries
+   - Uses `match()` to check each filename against the pattern
+   - Stats matched files and displays their information
+   - Constructs full paths using `./filename` format
+
+**Code Location:**
+- Pattern matching logic: lines 25-36
+- Wildcard listing function: lines 89-123
+- Main program detection: lines 135-140 (checks for `*` in arguments)
+
 ---
 
 ## Modified Files
@@ -221,6 +297,13 @@ Reads from stdin and prints first line.
 - Added security check to prevent reading the `users` file
 - Direct read attempts of `users` return error
 - Protects password database from casual inspection
+
+### 11. **ls.c**
+- Added wildcard pattern matching support with `*` character
+- Implemented `match()` function for recursive pattern matching
+- Added `ls_wildcard()` function to handle wildcard expansions
+- Enhanced main program to detect wildcards in arguments
+- **Limitation:** Wildcard expansion limited to current directory only
 
 ---
 
@@ -411,9 +494,10 @@ Password: wrongpass
 | init.c    | MODIFIED | +17 lines - Start login instead of shell       |
 | sh.c      | MODIFIED | +30 lines - Enforce admin command restrictions |
 | cat.c     | MODIFIED | +6 lines - Protect users file from reading     |
+| ls.c      | MODIFIED | +50 lines - Add wildcard pattern matching      |
 | Makefile  | MODIFIED | +8 lines - Add new program targets             |
 
-**Total:** 377 lines added across 6 new programs, 7 lines modified across 10 kernel files
+**Total:** 377 lines added across 6 new programs, 54 lines modified across 11 kernel/utility files
 
 ---
 

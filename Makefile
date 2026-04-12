@@ -165,14 +165,6 @@ mkfs: mkfs.c fs.h
 # http://www.gnu.org/software/make/manual/html_node/Chained-Rules.html
 .PRECIOUS: %.o
 
-# NOTE: ls.c has been modified to support wildcard expansion (e.g., ls *)
-# The implementation includes:
-# - match() function: basic glob pattern matching that supports '*' wildcards
-# - ls_wildcard() function: handles wildcard patterns by matching against files
-#   in the current directory (note: only works for patterns in the current directory)
-# - main() check: detects '*' in arguments and calls ls_wildcard() accordingly
-# This was necessary because the xv6 shell does not expand wildcards like standard Unix shells.
-
 UPROGS=\
 	_cat\
 	_echo\
