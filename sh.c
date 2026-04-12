@@ -141,6 +141,17 @@ getcmd(char *buf, int nbuf)
   return 0;
 }
 
+// strcmp but with a length limit.
+// this implementation was added and was not in the original xv6 codebase.
+int strncmp(const char *s1, const char *s2, int n)
+{
+  for(int i = 0; i < n; i++){
+    if(s1[i] != s2[i] || s1[i] == 0 || s2[i] == 0)
+      return s1[i] - s2[i];
+  }
+  return 0;
+}
+
 int
 main(void)
 {
@@ -155,8 +166,27 @@ main(void)
     }
   }
 
+  printf(1, "Current UID: %d\n", getuid());
+
   // Read and run input commands.
   while(getcmd(buf, sizeof(buf)) >= 0){
+
+    int uid = getuid();
+    
+    // Prevent non-admin users from overwriting the users file.
+    if(uid == 0 && strncmp(buf, "cat > users", 11) == 0){
+      printf(2, "Permission denied: protected file\n");
+      continue;
+    }
+
+    // Prevent non-admin users from running the some command command.
+    // this is very bad check because can be bypassed by write and runnig a script inside xv6.
+    // this implementation was added and was not in the original xv6 codebase.
+    if(uid == 0 && (strncmp(buf, "kill", 4) == 0 || strncmp(buf, "rm", 2) == 0 || strncmp(buf, "useradd", 7) == 0 || strncmp(buf, "userdel", 7) == 0)){
+      printf(2, "Permission denied: admin only command\n");
+      continue;
+    }
+
     if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
       // Chdir must be called by the parent, not the child.
       buf[strlen(buf)-1] = 0;  // chop \n
