@@ -179,6 +179,11 @@ main(void)
       continue;
     }
 
+    if(uid == 0 && strncmp(buf, "rfl users", 9) == 0){
+      printf(2, "Permission denied: protected file\n");
+      continue;
+    }
+
     // Prevent non-admin users from running the some command command.
     // this is very bad check because can be bypassed by write and runnig a script inside xv6.
     // this implementation was added and was not in the original xv6 codebase.
