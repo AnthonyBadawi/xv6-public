@@ -436,3 +436,4 @@ The login-system branch provides a foundation for understanding user management 
 - **Base xv6:** MIT PDOS Educational OS
 - **Branch:** login-system (diverged from master)
 - **Implementation Date:** 2026
+- **Student Devs:** Anthony Badawi | Moustafa Hoteit
