@@ -133,7 +133,7 @@ main(int argc, char *argv[])
   for(i=1; i<argc; i++){
     // Check if the argument contains a wildcard character
     // this implementation was added and was not in the original xv6 codebase.
-    printf(1, "arg = %s\n", argv[i]);
+    // Debug: printf(1, "arg = %s\n", argv[i]);
     if(strchr(argv[i], '*')){
       ls_wildcard(argv[i]);
     } else {
