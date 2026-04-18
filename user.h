@@ -29,6 +29,8 @@ int getuid(void);
 //for kernel thread
 int clone(void (*fcn)(void*), void *arg, void *stack);
 int join(void **stack);
+int setpriority(int pid, int priority);
+int yield(void);
 
 // ulib.c
 int stat(const char*, struct stat*);

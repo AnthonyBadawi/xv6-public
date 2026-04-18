@@ -89,6 +89,7 @@ found:
   p->uid = 0; // default = normal user
   p->state = EMBRYO;
   p->pid = nextpid++;
+  p->priority = 10;
 
   release(&ptable.lock);
 
@@ -490,35 +491,39 @@ void
 scheduler(void)
 {
   struct proc *p;
+  struct proc *best;
   struct cpu *c = mycpu();
   c->proc = 0;
-  
+
   for(;;){
-    // Enable interrupts on this processor.
     sti();
 
-    // Loop over process table looking for process to run.
     acquire(&ptable.lock);
+
+    best = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
 
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
+      if(best == 0 || p->priority < best->priority){
+        best = p;
+      } else if(p->priority == best->priority){
+        if(p->pid > best->pid)
+          best = p;
+      }
+    }
 
-      swtch(&(c->scheduler), p->context);
+    if(best != 0){
+      c->proc = best;
+      switchuvm(best);
+      best->state = RUNNING;
+
+      swtch(&c->scheduler, best->context);
       switchkvm();
 
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
       c->proc = 0;
     }
     release(&ptable.lock);
-
   }
 }
 
@@ -698,4 +703,28 @@ procdump(void)
     }
     cprintf("\n");
   }
+}
+
+// Set the priority of a process with the given pid.
+// Returns 0 on success, -1 if no such process exists.
+// This was added as part of the assignment to implement a simple priority scheduler.
+int
+setpriority(int pid, int priority)
+{
+  struct proc *p;
+  int found = 0;
+
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->pid == pid){
+      p->priority = priority;
+      found = 1;
+      break;
+    }
+  }
+  release(&ptable.lock);
+
+  if(!found)
+    return -1;
+  return 0;
 }

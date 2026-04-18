@@ -106,6 +106,8 @@ extern int sys_uptime(void);
 extern int sys_clear(void);
 extern int sys_setuid(void);
 extern int sys_getuid(void);
+extern int sys_setpriority(void);
+extern int sys_yield(void);
 
 extern int sys_clone(void);
 extern int sys_join(void);
@@ -137,6 +139,8 @@ static int (*syscalls[])(void) = {
 [SYS_getuid]  sys_getuid,
 [SYS_clone]   sys_clone,
 [SYS_join]    sys_join,
+[SYS_setpriority] sys_setpriority,
+[SYS_yield] sys_yield,
 };
 
 void
