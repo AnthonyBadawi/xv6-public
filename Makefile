@@ -187,6 +187,7 @@ UPROGS=\
 	_mkusers\
 	_useradd\
 	_userdel\
+	_tree\
 
 fs.img: mkfs README $(UPROGS)
 	@if [ ! -f fs.img ]; then ./mkfs fs.img README $(UPROGS); fi
