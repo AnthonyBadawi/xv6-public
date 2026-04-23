@@ -65,8 +65,12 @@ main(int argc, char *argv[])
 
         if(strcmp(line1, line2) != 0){
         printf(1, "Line %d differs:\n", line);
+
         printf(1, "file1: %s", line1);
+        if(n1 == 0 || line1[n1-1] != '\n') printf(1, "\n");//for cleaner format
+
         printf(1, "file2: %s", line2);
+        if(n2 == 0 || line2[n2-1] != '\n') printf(1, "\n");//for cleaner formatting
         diff_found = 1;
         }
         line++;
