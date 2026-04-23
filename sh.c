@@ -13,6 +13,14 @@
 
 #define MAXARGS 10
 
+//History definitions
+#define HISTORY_SIZE 10 
+#define MAX_COMMAND_CHAR 100
+//
+
+char history[HISTORY_SIZE][MAX_COMMAND_CHAR];
+int history_count = 0;
+
 struct cmd {
   int type;
 };
@@ -152,6 +160,39 @@ int strncmp(const char *s1, const char *s2, int n)
   return 0;
 }
 
+void
+add_history(char *cmd){
+  int length = strlen(cmd);
+  int circular_index = history_count % HISTORY_SIZE;
+  //skip empty and new line
+  if(length == 0 || (length == 1 && cmd[0] == '\n')) return;
+  memset(history[circular_index], 0, MAX_COMMAND_CHAR);
+
+  int i;
+  for(i = 0;i < length && i < MAX_COMMAND_CHAR -1; i++){
+    if(cmd[i] == '\n') break;
+    history[circular_index][i] = cmd[i];
+  }
+  //null terminate command
+  history[circular_index][i] = 0; 
+  history_count++;
+}
+
+void
+show_history(void){
+  int head, total, circular_index;
+  if(history_count < HISTORY_SIZE){
+    head = 0;
+  } else head = history_count - HISTORY_SIZE;
+  total = history_count;
+  
+  for(int i = head; i <total; i++)
+  {
+    circular_index = i % HISTORY_SIZE;
+    printf(1, "%d: %s\n", i+1, history[circular_index]);
+  }
+}
+
 int
 main(void)
 {
@@ -171,6 +212,8 @@ main(void)
   // Read and run input commands.
   while(getcmd(buf, sizeof(buf)) >= 0){
 
+    add_history(buf);
+
     int uid = getuid();
     
     // Prevent non-admin users from overwriting the users file.
@@ -189,6 +232,18 @@ main(void)
     // this implementation was added and was not in the original xv6 codebase.
     if(uid == 0 && (strncmp(buf, "kill", 4) == 0 || strncmp(buf, "rm", 2) == 0 || strncmp(buf, "useradd", 7) == 0 || strncmp(buf, "userdel", 7) == 0)){
       printf(2, "Permission denied: admin only command\n");
+      continue;
+    }
+
+    //history command
+    if(strncmp(buf, "history", 7) == 0 && (buf[7] == '\n' || buf[7] == 0)){
+    show_history();
+    continue;
+    }
+    //reset history command
+    if(strncmp(buf, "history -c", 10) == 0 && (buf[10] == '\n' || buf[10] == 0)){
+      history_count = 0;
+      printf(1, "history cleared\n");
       continue;
     }
 
@@ -421,10 +476,10 @@ parseredirs(struct cmd *cmd, char **ps, char *es)
       cmd = redircmd(cmd, q, eq, O_RDONLY, 0);
       break;
     case '>':
-      cmd = redircmd(cmd, q, eq, O_WRONLY|O_CREATE, 1);
+      cmd = redircmd(cmd, q, eq, O_WRONLY|O_CREATE|O_TRUNC, 1); //we handle O_TRUNC behavior in sys_open() in sysfile.c
       break;
     case '+':  // >>
-      cmd = redircmd(cmd, q, eq, O_WRONLY|O_CREATE, 1);
+      cmd = redircmd(cmd, q, eq, O_WRONLY|O_CREATE|O_APPEND, 1);//we handle O_APPEND behavior in sys_open() in sysfile.c
       break;
     }
   }
