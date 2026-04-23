@@ -107,6 +107,9 @@ extern int sys_clear(void);
 extern int sys_setuid(void);
 extern int sys_getuid(void);
 
+extern int sys_clone(void);
+extern int sys_join(void);
+
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
 [SYS_exit]    sys_exit,
@@ -132,6 +135,8 @@ static int (*syscalls[])(void) = {
 [SYS_clear]   sys_clear,
 [SYS_setuid]  sys_setuid,
 [SYS_getuid]  sys_getuid,
+[SYS_clone]   sys_clone,
+[SYS_join]    sys_join,
 };
 
 void

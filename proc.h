@@ -50,6 +50,14 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+
+  //kernel thread additions
+  int is_thread;               // 0 = normal process, 1 = kernel thread
+  void *ustack;                // user stack for cloned thread
+  struct proc *tgid;           // thread group id, I the copied conventional naming from linux
+  //this designs makes checks easy too, same address space then check tgid, is it process or just thread check is_thread
+  //also is it thread in same process, check is_thread and tgid...etc
+  //in linux its better to have numeric tgid, int tgid etc.. but we are working small scale and for may less complexity i decided to use struct proc
 };
 
 // Process memory is laid out contiguously, low addresses first:

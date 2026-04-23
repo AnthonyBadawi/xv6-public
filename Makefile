@@ -189,6 +189,7 @@ UPROGS=\
 	_userdel\
 	_tree\
 	_diff\
+	_threadtest\
 
 fs.img: mkfs README $(UPROGS)
 	@if [ ! -f fs.img ]; then ./mkfs fs.img README $(UPROGS); fi
