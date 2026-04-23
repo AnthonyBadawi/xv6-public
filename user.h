@@ -44,4 +44,14 @@ void* malloc(uint);
 void free(void*);
 int atoi(const char*);
 
+//threadlib.c
+int thread_create(void (*fcn)(void*), void *arg);
+int thread_join(void);
+typedef struct {
+  uint locked;
+} lock_t;
+
+void lock_init(lock_t *lk);
+void lock_acquire(lock_t *lk);
+void lock_release(lock_t *lk);
 

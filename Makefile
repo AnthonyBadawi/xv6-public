@@ -143,7 +143,10 @@ tags: $(OBJS) entryother.S _init
 vectors.S: vectors.pl
 	./vectors.pl > vectors.S
 
-ULIB = ulib.o usys.o printf.o umalloc.o
+
+#ULIB = ulib.o usys.o printf.o umalloc.o
+#change
+ULIB = ulib.o usys.o printf.o umalloc.o threadlib.o
 
 _%: %.o $(ULIB)
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $@ $^
@@ -190,6 +193,7 @@ UPROGS=\
 	_tree\
 	_diff\
 	_threadtest\
+	_locktest\
 
 fs.img: mkfs README $(UPROGS)
 	@if [ ! -f fs.img ]; then ./mkfs fs.img README $(UPROGS); fi
