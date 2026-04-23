@@ -112,3 +112,32 @@ int sys_getuid(void)
 {
   return myproc()->uid;
 }
+
+//for kernel threads
+int
+sys_clone(void)
+{
+  char *fcn;
+  char *arg;
+  char *stack;
+
+  if(argptr(0, &fcn, sizeof(void*)) < 0)
+    return -1;
+  if(argptr(1, &arg, sizeof(void*)) < 0)
+    return -1;
+  if(argptr(2, &stack, sizeof(void*)) < 0)
+    return -1;
+
+  return clone((void(*)(void*))fcn, arg, stack);
+}
+
+int
+sys_join(void)
+{
+  char **stack;
+
+  if(argptr(0, (char**)&stack, sizeof(void*)) < 0)
+    return -1;
+
+  return join((void**)stack);
+}
