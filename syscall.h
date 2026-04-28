@@ -25,3 +25,5 @@
 #define SYS_getuid 24
 #define SYS_clone  25
 #define SYS_join   26
+#define SYS_setpriority 27
+#define SYS_yield 28

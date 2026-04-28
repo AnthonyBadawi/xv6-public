@@ -194,6 +194,9 @@ UPROGS=\
 	_diff\
 	_threadtest\
 	_locktest\
+	_priority_test\
+    _priority_test2\
+    _priority_test3\
 
 fs.img: mkfs README $(UPROGS)
 	@if [ ! -f fs.img ]; then ./mkfs fs.img README $(UPROGS); fi

@@ -58,7 +58,10 @@ struct proc {
   //this designs makes checks easy too, same address space then check tgid, is it process or just thread check is_thread
   //also is it thread in same process, check is_thread and tgid...etc
   //in linux its better to have numeric tgid, int tgid etc.. but we are working small scale and for may less complexity i decided to use struct proc
+  int priority;                // Process priority (lower value means higher priority)
 };
+
+int setpriority(int pid, int priority);
 
 // Process memory is laid out contiguously, low addresses first:
 //   text
