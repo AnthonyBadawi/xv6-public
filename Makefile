@@ -199,6 +199,7 @@ UPROGS=\
     _priority_test3\
 	_find\
 	_split\
+	_search\
 
 fs.img: mkfs README $(UPROGS)
 	@if [ ! -f fs.img ]; then ./mkfs fs.img README $(UPROGS); fi
