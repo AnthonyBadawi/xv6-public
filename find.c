@@ -4,7 +4,8 @@
 #include "fcntl.h"
 #include "fs.h"
 
-//logic from diff.c was re-used
+//NTOE: LOGIC IS RE-USED FROM TREE.C
+
 
 //printing / name checking purposes
 
@@ -31,7 +32,6 @@ fmtname(char *path)
     buf[strlen(p)] = 0;
     return buf;
 }
-
 
 
 //recursion approach
