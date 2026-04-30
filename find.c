@@ -4,7 +4,9 @@
 #include "fcntl.h"
 #include "fs.h"
 
-//logic from diff.c was re-used
+//NTOE: LOGIC IS RE-USED FROM TREE.C
+
+int found_any = 0;
 
 //printing / name checking purposes
 
@@ -33,7 +35,6 @@ fmtname(char *path)
 }
 
 
-
 //recursion approach
 void
 find(char *path, char *target)
@@ -56,8 +57,10 @@ find(char *path, char *target)
 
     //main change from tree:
     //instead of printing every file/directory, we only print matches
-    if(strcmp(fmtname(path), target) == 0)
+    if(strcmp(fmtname(path), target) == 0){
         printf(1, "%s\n", path);
+        found_any = 1;
+    }
 
     //if type is not a directory then return
     //only activate recursion if directory
@@ -106,5 +109,9 @@ main(int argc, char *argv[])
     }
 
     find(argv[1], argv[2]);
+
+    if(found_any == 0)
+        printf(1, "find: %s not found\n", argv[2]);
+
     exit();
 }
